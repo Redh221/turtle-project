@@ -1,3 +1,4 @@
+import Header from "@/components/Header";
 import "./globals.css";
 import {
   ClerkProvider,
@@ -7,6 +8,8 @@ import {
   UserButton,
 } from "@clerk/nextjs";
 import type { Metadata } from "next";
+import { ThemeProvider } from "@/components/theme-provider";
+import Sidebar from "@/components/Sidebar";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -20,17 +23,28 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
-      <html lang="en">
-        <body className="bg-green-100">
-          <header className="flex justify-end items-center p-4 gap-4 h-16">
-            <SignedOut>
-              <SignInButton mode="modal" />
-            </SignedOut>
-            <SignedIn>
-              <UserButton userProfileMode="modal" />
-            </SignedIn>
-          </header>
-          {children}
+      <html lang="en" suppressHydrationWarning>
+        <body>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <div className="max-w-[1024px] mx-auto pl-[20px] pr-[20px]">
+              <div className="pb-[15px]">
+                <Header />
+              </div>
+              <div className="grid grid-cols-1 gap-4 lg:grid-cols-12">
+                <div className="hidden lg:block lg:col-span-3">
+                  <Sidebar />
+                </div>
+                <div className="flex flex-col items-center min-h-screen lg:col-span-9">
+                  {children}
+                </div>
+              </div>
+            </div>
+          </ThemeProvider>
         </body>
       </html>
     </ClerkProvider>
