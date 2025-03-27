@@ -1,6 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import { getUser } from "@/actions/user.action";
+import { auth } from "@clerk/nextjs/server";
 
 interface SidebarProps {
   avatarUrl?: string;
@@ -13,8 +14,12 @@ export default async function Sidebar({
   userName = "User Name",
   email = "user@example.com",
 }: SidebarProps) {
+  const { userId } = await auth();
   const user = await getUser();
   console.log(user);
+  if (!userId) {
+    return null;
+  }
   return (
     <aside className="w-64 h-full bg-gray-100 dark:bg-gray-800 p-4">
       <div className="flex flex-col items-center">

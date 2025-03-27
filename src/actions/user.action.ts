@@ -7,7 +7,7 @@ export async function syncUser() {
   try {
     const { userId } = await auth();
     const user = await currentUser();
-    if (!userId || !user) return;
+    if (!userId || !user) return null;
     const existingUser = await prisma.user.findFirst({
       where: { clerkId: userId },
     });
@@ -24,14 +24,20 @@ export async function syncUser() {
       },
     });
     return dbUser;
-  } catch (error) {}
+  } catch (error) {
+    return null;
+  }
 }
+
 export const getUser = async () => {
   const { userId } = await auth();
   if (userId) {
-    const user = await prisma.user.findFirst({
+    let user = await prisma.user.findFirst({
       where: { clerkId: userId },
     });
+    if (!user) {
+      user = await syncUser();
+    }
     return user;
   }
 };
